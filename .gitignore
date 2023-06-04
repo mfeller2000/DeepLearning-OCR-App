@@ -1,0 +1,9 @@
+.ipynb_checkpoints/
+.vscode
+__pycache__
+src/checkpoints
+src/dataset
+src/evals
+src/logs
+src/models
+src/dist.png
