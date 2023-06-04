@@ -47,5 +47,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+    <string>Permission is needed to take a picture of handwritten characters for recognition.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Not needed but the flutter framework still needs it for a reason, I don't know why.</string>
 </dict>
 </plist>
