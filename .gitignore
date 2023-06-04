@@ -1,9 +1,9 @@
 .ipynb_checkpoints/
 .vscode
 __pycache__
-src/checkpoints
-src/dataset
-src/evals
-src/logs
-src/models
-src/dist.png
+src/tensorflow/checkpoints
+src/tensorflow/dataset
+src/tensorflow/evals
+src/tensorflow/logs
+src/tensorflow/models
+src/tensorflow/dist.png
