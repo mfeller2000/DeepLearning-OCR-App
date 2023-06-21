@@ -20,7 +20,7 @@ def get_sets(*sizes):
 def get_custom_sets():
     ds_train_custom = tf.keras.utils.image_dataset_from_directory("dataset/train", image_size=(73, 73), batch_size=None)
     ds_val_custom = tf.keras.utils.image_dataset_from_directory("dataset/val", image_size=(73, 73), batch_size=None)
-    ds_val_test = tf.keras.utils.image_dataset_from_directory("dataset/val", image_size=(73, 73), batch_size=None)
+    ds_val_test = tf.keras.utils.image_dataset_from_directory("dataset/test", image_size=(73, 73), batch_size=None)
     
     custom_sets = [ds_train_custom, ds_val_custom, ds_val_test]
     

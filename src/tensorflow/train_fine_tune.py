@@ -15,7 +15,7 @@ ds_train = ds_train.batch(batch_size)
 ds_val = ds_val.batch(batch_size)
 
 # load pre trained model
-model_name = "feller-ES-MAX-E100-250K-N(512, 2, 2, 3, 0.8, 1, 64, 0.0005)-20230523-130946"
+model_name = "../../models/feller-9-v1"
 model = tf.keras.models.load_model("models/" + model_name)
 
 # save model with specific name 
