@@ -47,11 +47,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <com.example.mindencameraapp.OverlayView
-                    android:id="@+id/overlayView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
                 <TextView
                     android:id="@+id/classificationResults"
                     android:layout_width="match_parent"
