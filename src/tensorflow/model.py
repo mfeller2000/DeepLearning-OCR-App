@@ -1,4 +1,5 @@
 from tensorflow.keras import Sequential, layers
+from tensorflow import keras
 import tensorflow as tf
 
 # create dynamic model with specific settings
@@ -7,7 +8,7 @@ def create_model(settings):
     
     model = Sequential()
 
-    # filter start, gets doubled after every conv block (exmaple 1. block 16, 2. block 32, 3. block 64 ..)
+    # filter start, gets doubled after every conv block (example 1. block 16, 2. block 32, 3. block 64 ..)
     filters = filter_start
     
     # this conv. layer is always static and cannot be changed due to the input shape
@@ -48,12 +49,13 @@ def create_model(settings):
             model.add(layers.Dropout(dropout_rate))
     
     # output layer of all 62 classes
-    model.add(layers.Dense(62, activation='softmax'))
+    model.add(layers.Dense(62))
 
     # set learning rate of adam optimizer
     optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
     
-    model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    # enable logits for knowledge distillation
+    model.compile(optimizer=optimizer, loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
     
     model.summary()
 

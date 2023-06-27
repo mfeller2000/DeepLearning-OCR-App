@@ -3,19 +3,20 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import tensorflow_datasets as tfds
 import datetime, os, re
-from dataset import get_custom_sets, get_emnist_sets, get_sets
+from dataset import Dataset
 import csv
 
 models_dir = "models/"
 results = []
 
-ds_train, ds_val, ds_test = get_sets(1, -1, 1)
+ds = Dataset(1, -1, 1)
+ds_train, ds_val, ds_test = ds.get_sets()
     
 # validate multiple models at once in models/ directory
 for dir in os.listdir(models_dir):
     # only include certain models with regex
-    #if re.search("^feller-ES-MAX-E100-250K-N(512, 2, 2, 3, 0.8, 1, 64, 0.0005)-20230523-130946.*", dir):
-    if dir == "feller-ES-MAX-E100-250K-N(512, 2, 2, 3, 0.8, 1, 64, 0.0005)-20230523-130946-FINE-TUNED":
+    if re.search("^feller-student-distilled-model-20230623-032948*", dir):
+    #if dir == "feller-ES-MAX-E100-250K-N(512, 2, 2, 3, 0.8, 1, 64, 0.0005)-20230523-130946-FINE-TUNED":
         model_dir = os.path.join(models_dir, dir)
         # load pre trained model
         model = tf.keras.models.load_model(model_dir)

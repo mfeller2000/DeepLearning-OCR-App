@@ -2,17 +2,19 @@ import numpy as np
 import tensorflow as tf
 import datetime
 from model import create_model
-from dataset import get_custom_sets, get_emnist_sets, get_sets
+from dataset import Dataset
 import itertools
 
-train_size = -1
-ds_train, ds_val, ds_test = get_sets(train_size, -1, -1)
+
+train_size = 250000
+ds = Dataset(train_size, -1, 0)
+ds_train, ds_val, ds_test = ds.get_sets()
 ds_val_fit = ds_val.take(25000)
 
 
 # TUNABLE PARAMETERS 
 # amount of nodes per fc-layer
-nodes_per_layer = [512, 1024]
+nodes_per_layer = [512]
 # amount of fc layers
 num_hidden_layers = [2]
 # amount of conv. layers per block
@@ -24,9 +26,9 @@ dropout_rates = [0.8]
 # batch normalization after every fc-layer (1 = add layer; 0 = dont add layer)
 batch_normalization = [1]
 # filter start, will double the filter amount after every block (1. block 16, 2. block 32 ...)
-filter_starts = [32, 64]
+filter_starts = [64]
 # learning rate for adam optimizer
-learning_rates = [0.001, 0.0005, 0.00025, 0.0001]
+learning_rates = [0.0005]
 
 # create combinations for all parameters
 combinations = list(itertools.product(nodes_per_layer, num_hidden_layers, conv_layers_per_block, num_conv_blocks, dropout_rates, batch_normalization, filter_starts, learning_rates))
@@ -55,8 +57,8 @@ for settings in combinations:
 
     tensorboard = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
     
-    # stop fitting if there is no improvement in validation loss within 3 epochs
-    early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3)
+    # stop fitting if there is no improvement in validation loss within 5 epochs
+    early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5)
     
     # train model and do validation after each epoch 
     history = model.fit(ds_train, validation_data=ds_val_fit, epochs=num_epochs, callbacks=[tensorboard, early_stopping])
