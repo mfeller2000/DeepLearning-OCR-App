@@ -24,6 +24,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -494,21 +496,48 @@ public class MainActivity extends AppCompatActivity implements ImageAnalysis.Ana
         Log.d("classifyMulti", "Prediction: " + predictedText);
 
         // save image to internal storage
-        saveImage(imageResult, "images");
-        Toast.makeText(MainActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+        saveImage(imageResult, "images", true);
     }
 
-    private void saveImage(Bitmap image, String folder) {
+    private void saveImage(Bitmap image, String folder, boolean openViewer) {
         long timeStamp = System.currentTimeMillis();
         FileOutputStream outputStream;
+        String fileName = timeStamp + ".jpg";
+
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/DeepLearningApp/" + folder;
+
+        // Create folder path if it doesn't exists
+        try {
+            Files.createDirectories(Paths.get(path));
+        } catch (IOException e) {
+            Log.e("saveImage", "Error creating/finding folder path", e);
+            return;
+        }
+
+        String fullFilePath = path  + "/" + fileName;
+
         // Save the image to internal storage
-        File processedImageFile = new File(this.getExternalFilesDir(folder), timeStamp + ".jpg");
+        File processedImageFile = new File(fullFilePath);
         try {
             outputStream = new FileOutputStream(processedImageFile);
             image.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        Log.d("saveImage", "Saved image to " + path);
+        Toast.makeText(MainActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+
+        // Open viewer to view the image
+        if(openViewer) {
+            Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", processedImageFile);
+
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(photoURI, "image/*");
+            startActivity(intent);
         }
     }
 
@@ -571,8 +600,7 @@ public class MainActivity extends AppCompatActivity implements ImageAnalysis.Ana
         canvas.drawText(resultString, x, y, paint);
 
         // save image
-        saveImage(labeledBitmap, "images");
-        Toast.makeText(MainActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
+        saveImage(labeledBitmap, "images", true);
     }
 
     /*
@@ -648,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements ImageAnalysis.Ana
             }
 
             // save debug image
-            saveImage(grayscaleBitmap, "debug");
+            saveImage(grayscaleBitmap, "debug", false);
             floatBuffer.rewind();
         }
 
