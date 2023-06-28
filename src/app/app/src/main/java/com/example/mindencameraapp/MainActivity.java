@@ -352,8 +352,13 @@ public class MainActivity extends AppCompatActivity implements ImageAnalysis.Ana
 
     /*
     * Binarize a bitmap image, set pixel to to BLACK if below threshold or to WHITE if above threshold
+    * to disable set threshold to zero
     * */
     private Bitmap binarizeBitmap(Bitmap image, int threshold) {
+        if(threshold == 0) {
+            return image;
+        }
+
         for(int x = 0; x < image.getWidth(); x++) {
             for(int y = 0; y < image.getHeight(); y++) {
                 int pixel = image.getPixel(x, y);
@@ -527,12 +532,10 @@ public class MainActivity extends AppCompatActivity implements ImageAnalysis.Ana
         }
 
         Log.d("saveImage", "Saved image to " + path);
-        Toast.makeText(MainActivity.this, "Image saved", Toast.LENGTH_SHORT).show();
 
         // Open viewer to view the image
         if(openViewer) {
             Uri photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", processedImageFile);
-
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
